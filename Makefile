@@ -1,5 +1,4 @@
 .build:
-	g++ main.cpp -c -o  ../../build/miner.o -Wall
 	g++ eten-cpu/eten.cpp -c -o ../../build/eten-cpu.o -fpermissive
 	g++ eten-cpu/logic.cpp -c -o ../../build/logic-cpu.o
 	g++ eten-cpu/base64.cpp -c -o ../../build/base64-cpu.o
