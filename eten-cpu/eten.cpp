@@ -34,7 +34,6 @@ std::string etenCalc(std::string hash,std::string poolKey,int difficult)
 {
     hash = bitwise_xor(hash,poolKey);
     hash = bitwise_or(hash,poolKey);
-    hash = bitwise_not(hash,poolKey);
     hash = bitwise_and(hash,poolKey);
        hash = bitwise_nand(hash,poolKey);
 
@@ -50,14 +49,11 @@ std::string etenCalc(std::string hash,std::string poolKey,int difficult)
     poolKey = toBinaryString(poolKey);
     
     hash = bitwise_xor(hash,poolKey);
-    hash = bitwise_not(hash,poolKey);
     hash = bitwise_xor(hash,poolKey);
-    hash = bitwise_not(hash,poolKey);
     for(int i; i < difficult; i++)
     {
         hash = bitwise_xor(hash,poolKey);
         hash = bitwise_or(hash,poolKey);
-        hash = bitwise_not(hash,poolKey);
         hash = bitwise_and(hash,poolKey);
         
         hash = toBinaryString(hash);
@@ -79,14 +75,12 @@ std::string etenCalc(std::string hash,std::string poolKey,int difficult)
     poolKey = encryptRailFence(poolKey,hashASCII);
     hash = bitwise_xor(hash,poolKey);
     hash = bitwise_or(hash,poolKey);
-    hash = bitwise_not(hash,poolKey);
     hash = bitwise_and(hash,poolKey);
        hash = bitwise_nand(hash,poolKey);
     for(int i; i < difficult; i++)
     {
         hash = bitwise_xor(hash,poolKey);
         hash = bitwise_or(hash,poolKey);
-        hash = bitwise_not(hash,poolKey);
         hash = bitwise_and(hash,poolKey);
         
         hash = toBinaryString(hash);
@@ -126,7 +120,6 @@ std::string etenCalc(std::string hash,std::string poolKey,int difficult)
 
     hash = bitwise_xor(hash,poolKey);
     hash = bitwise_or(hash,poolKey);
-    hash = bitwise_not(hash,poolKey);
     hash = bitwise_and(hash,poolKey);
     hash = bitwise_nand(hash,poolKey);
     hash = sha512(hash);
@@ -141,14 +134,12 @@ std::string etenCalc(std::string hash,std::string poolKey,int difficult)
 
     hash = bitwise_xor(hash,poolKey);
     hash = bitwise_or(hash,poolKey);
-    hash = bitwise_not(hash,poolKey);
     hash = bitwise_and(hash,poolKey);
     hash = bitwise_nand(hash,poolKey);
     hash = sha512(hash);
     poolKey = sha512(poolKey);
 
     hash = bitwise_and(hash,poolKey);
-    hash = bitwise_not(hash,poolKey);
     hash = bitwise_nand(hash,poolKey);
     return hash;
 };
