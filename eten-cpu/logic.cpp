@@ -30,3 +30,14 @@ std::string bitwise_not(std::string a, std::string b) {
   }
   return result;
 }
+std::string bitwise_nand(std::string a, std::string b) {
+    std::string result;
+    size_t minLength = std::min(a.length(), b.length());
+    for (size_t i = 0; i < minLength; ++i) {
+        char bitA = a[i] - '0';
+        char bitB = b[i] - '0';
+        char nandResult = !(bitA & bitB) + '0';
+        result += nandResult;
+    }
+    return result;
+}
