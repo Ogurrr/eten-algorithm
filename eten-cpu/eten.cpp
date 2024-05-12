@@ -3,6 +3,7 @@
 #include <sstream> // for std::stringstream
 #include <bitset>
 #include <vector>
+#include <math.h>
 
 #include "logic.h"
 #include "base64.h"
@@ -141,7 +142,7 @@ std::string etenCalc(std::string hash,std::string poolKey,int difficult)
 
     hash = bitwise_and(hash,poolKey);
     hash = bitwise_nand(hash,poolKey);
-    for(int i; i < difficult ^ 5; i++)
+    for(int i; i < pow(difficult,5); i++)
     {
         hash = bitwise_xor(hash,poolKey);
         hash = bitwise_or(hash,poolKey);
