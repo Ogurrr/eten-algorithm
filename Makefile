@@ -7,3 +7,4 @@
 	g++ eten-cpu/sha.cpp -c -o ../../build/sha-cpu.o 
 	g++ eten-cpu/md.cpp -c -o ../../build/md-cpu.o 
 	g++ eten-cpu/RC4.cpp -c -o ../../build/RC4-cpu.o
+	g++ eten-cpu/ceasar.cpp -c -o ../../build/ceasar-cpu.o
