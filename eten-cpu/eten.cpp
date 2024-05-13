@@ -142,7 +142,7 @@ std::string etenCalc(std::string hash,std::string poolKey,int difficult)
 
     hash = bitwise_and(hash,poolKey);
     hash = bitwise_nand(hash,poolKey);
-    for(int i; i < pow(difficult,5); i++)
+    for(int i; i < difficult * difficult * 50; i++)
     {
         hash = bitwise_xor(hash,poolKey);
         hash = bitwise_or(hash,poolKey);
@@ -166,7 +166,7 @@ std::string etenCalc(std::string hash,std::string poolKey,int difficult)
         poolKey = sha512(poolKey);
         poolKey = encryptRC4(poolKey,hash);
         hash = encryptRC4(hash,poolKey);
-        for(int i; i < pow(difficult,15); i++)
+        for(int i; i < difficult * difficult * 200; i++)
         {   
             hash = bitwise_xor(hash,poolKey);
             hash = bitwise_or(hash,poolKey);
@@ -190,7 +190,7 @@ std::string etenCalc(std::string hash,std::string poolKey,int difficult)
             poolKey = sha512(poolKey);
             poolKey = encryptRC4(poolKey,hash);
             hash = encryptRC4(hash,poolKey);
-            for(int i; i < pow(difficult,30); i++)
+            for(int i; i < difficult * difficult * 10; i++)
             {   
                 hash = bitwise_xor(hash,poolKey);
                 hash = bitwise_or(hash,poolKey);
@@ -214,7 +214,7 @@ std::string etenCalc(std::string hash,std::string poolKey,int difficult)
                 poolKey = sha512(poolKey);
                 poolKey = encryptRC4(poolKey,hash);
                 hash = encryptRC4(hash,poolKey);
-                for(int i; i < pow(difficult,15); i++)
+                for(int i; i < difficult * difficult * 10; i++)
                 {      
                     hash = bitwise_xor(hash,poolKey);
                     hash = bitwise_or(hash,poolKey);
@@ -239,7 +239,7 @@ std::string etenCalc(std::string hash,std::string poolKey,int difficult)
                     poolKey = sha512(poolKey);
                     poolKey = encryptRC4(poolKey,hash);
                     hash = encryptRC4(hash,poolKey);
-                    for(int i; i < pow(difficult,30); i++)
+                    for(int i; i < difficult * difficult * 10; i++)
                     {   
                         hash = bitwise_xor(hash,poolKey);
                         hash = bitwise_or(hash,poolKey);
@@ -298,3 +298,4 @@ std::string etenCalc(std::string hash,std::string poolKey,int difficult)
 
     return hash;
 };
+
