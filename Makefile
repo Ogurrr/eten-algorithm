@@ -11,6 +11,6 @@
 	g++ eten-cpu/test.cpp ../../build/base64-cpu.o ../../build/caesar-cpu.o  -o ../test-cpu
 	
 	g++ eten-opencl/eten.cpp -c -o ../../build/eten-opencl.o
-	g++ eten-opencl/base64.cpp -c -o ../../build/base-opencl.o
+	g++ eten-opencl/base64.cpp -c -o ../../build/base64-opencl.o
 	g++ eten-opencl/caesar.cpp -c -o ../../build/caesar-opencl.o
-	g++ eten-cpu/test.cpp ../../../build/base64-opencl.o ../../build/caesar-opencl.o -lOpenCL -o ../test-opencl 
+	g++ eten-cpu/test.cpp ../../build/base64-opencl.o ../../build/caesar-opencl.o -lOpenCL -o ../test-opencl 
