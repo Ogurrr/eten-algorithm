@@ -5,7 +5,7 @@
 #include <cstring>
 #define CHECK_ERROR(err) if (err != CL_SUCCESS) { printf("Error: %d\n", err); exit(EXIT_FAILURE); }
 
-const char* kernelSource = R"(
+const char* Base64kernelSource = R"(
 __constant char base64_chars[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
 __kernel void base64_encode(__global const unsigned char* input, __global char* output, int input_size) {
@@ -46,7 +46,7 @@ std::string encode(std::string inputed) {
     context = clCreateContext(NULL, 1, &device, NULL, NULL, &err); CHECK_ERROR(err);
     queue = clCreateCommandQueue(context, device, 0, &err); CHECK_ERROR(err);
 
-    program = clCreateProgramWithSource(context, 1, &kernelSource, NULL, &err); CHECK_ERROR(err);
+    program = clCreateProgramWithSource(context, 1, &Base64kernelSource, NULL, &err); CHECK_ERROR(err);
     err = clBuildProgram(program, 0, NULL, NULL, NULL, NULL); CHECK_ERROR(err);
 
     kernel = clCreateKernel(program, "base64_encode", &err); CHECK_ERROR(err);

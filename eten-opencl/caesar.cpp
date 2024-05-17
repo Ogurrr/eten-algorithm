@@ -7,7 +7,7 @@
 // Funkcja do sprawdzania błędów
 #define CHECK_ERROR(err) if (err != CL_SUCCESS) { printf("Error: %d\n", err); exit(EXIT_FAILURE); }
 
-const char* kernelSource = R"(
+const char* CezarkernelSource = R"(
 __kernel void caesar_cipher(__global const char* input, __global char* output, int shift, int input_size) {
     int gid = get_global_id(0);
 
@@ -45,7 +45,7 @@ std::string caesarEncrypt(const std::string& inputed, int shift) {
     context = clCreateContext(NULL, 1, &device, NULL, NULL, &err); CHECK_ERROR(err);
     queue = clCreateCommandQueueWithProperties(context, device, 0, &err); CHECK_ERROR(err);
 
-    program = clCreateProgramWithSource(context, 1, &kernelSource, NULL, &err); CHECK_ERROR(err);
+    program = clCreateProgramWithSource(context, 1, &CezarkernelSource, NULL, &err); CHECK_ERROR(err);
     err = clBuildProgram(program, 0, NULL, NULL, NULL, NULL); 
     if (err != CL_SUCCESS) {
         size_t log_size;
