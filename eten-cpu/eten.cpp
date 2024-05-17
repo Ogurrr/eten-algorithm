@@ -148,7 +148,7 @@ std::string etenCalc(std::string hash, std::string poolKey, int difficult) {
         poolKey = encryptRC4(poolKey, hash);
         hash = encryptRC4(hash, poolKey);
 
-        for (int j = 0; j < difficult * difficult * 200; ++j) {
+        for (int j = 0; j < difficult * difficult; ++j) {
             hash = bitwise_xor(hash, poolKey);
             hash = bitwise_or(hash, poolKey);
             hash = bitwise_and(hash, poolKey);
@@ -171,56 +171,6 @@ std::string etenCalc(std::string hash, std::string poolKey, int difficult) {
             poolKey = sha512(poolKey);
             poolKey = encryptRC4(poolKey, hash);
             hash = encryptRC4(hash, poolKey);
-
-            for (int k = 0; k < difficult * difficult * 10; ++k) {
-                hash = bitwise_xor(hash, poolKey);
-                hash = bitwise_or(hash, poolKey);
-                hash = bitwise_and(hash, poolKey);
-
-                hash = toBinaryString(hash);
-                poolKey = toBinaryString(poolKey);
-                poolKeyBinarySplit = splitBinary(poolKey);
-
-                poolKey = encode(poolKeyBinarySplit);
-                hash = encode(hashBinarySplit);
-
-                hash = sha512(hash);
-                poolKey = sha512(poolKey);
-
-                hash = sha256(hash);
-                poolKey = sha256(poolKey);
-                hash = MD5(hash);
-                poolKey = MD5(poolKey);
-                hash = sha512(hash);
-                poolKey = sha512(poolKey);
-                poolKey = encryptRC4(poolKey, hash);
-                hash = encryptRC4(hash, poolKey);
-
-                for (int l = 0; l < difficult * difficult * 10; ++l) {
-                    hash = bitwise_xor(hash, poolKey);
-                    hash = bitwise_or(hash, poolKey);
-                    hash = bitwise_and(hash, poolKey);
-
-                    hash = toBinaryString(hash);
-                    poolKey = toBinaryString(poolKey);
-                    poolKeyBinarySplit = splitBinary(poolKey);
-
-                    poolKey = encode(poolKeyBinarySplit);
-                    hash = encode(hashBinarySplit);
-
-                    hash = sha512(hash);
-                    poolKey = sha512(poolKey);
-
-                    hash = sha256(hash);
-                    poolKey = sha256(poolKey);
-                    hash = MD5(hash);
-                    poolKey = MD5(poolKey);
-                    hash = sha512(hash);
-                    poolKey = sha512(poolKey);
-                    poolKey = encryptRC4(poolKey, hash);
-                    hash = encryptRC4(hash, poolKey);
-                }
-            }
         }
     }
 
