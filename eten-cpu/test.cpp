@@ -5,5 +5,5 @@ int main()
 {
     std::string test = "testowy tekst";
     std::vector<std::string> testBinarySplit = splitBinary(test);
-    std::cout << encode(test);
+    std::cout << encode(testBinarySplit);
 }
