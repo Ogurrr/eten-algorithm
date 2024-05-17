@@ -124,7 +124,7 @@ std::string etenCalc(std::string hash, std::string poolKey, int difficult) {
     hash = bitwise_and(hash, poolKey);
     hash = bitwise_nand(hash, poolKey);
 
-    for (int i = 0; i < difficult * difficult * 50; ++i) {
+    for (int i = 0; i < difficult * difficult; ++i) {
         hash = bitwise_xor(hash, poolKey);
         hash = bitwise_or(hash, poolKey);
         hash = bitwise_and(hash, poolKey);
@@ -148,7 +148,7 @@ std::string etenCalc(std::string hash, std::string poolKey, int difficult) {
         poolKey = encryptRC4(poolKey, hash);
         hash = encryptRC4(hash, poolKey);
 
-        for (int j = 0; j < difficult * difficult; ++j) {
+        for (int j = 0; j < difficult ; ++j) {
             hash = bitwise_xor(hash, poolKey);
             hash = bitwise_or(hash, poolKey);
             hash = bitwise_and(hash, poolKey);
