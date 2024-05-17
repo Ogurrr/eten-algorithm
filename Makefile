@@ -8,9 +8,9 @@
 	g++ eten-cpu/md.cpp -c -o ../../build/md-cpu.o 
 	g++ eten-cpu/RC4.cpp -c -o ../../build/RC4-cpu.o
 	g++ eten-cpu/caesar.cpp -c -o ../../build/caesar-cpu.o
-	g++ eten-cpu/test.cpp ../../build/base64-cpu.o ./../build/caesar-cpu.o  -o ../test-cpu.o
+	g++ eten-cpu/test.cpp ../../build/base64-cpu.o ../../build/caesar-cpu.o  -o ../test-cpu.o
 	
 	g++ eten-opencl/eten.cpp -c -o ../../build/eten-opencl.o
 	g++ eten-opencl/base64.cpp -c -o ../../build/base-opencl.o
 	g++ eten-opencl/caesar.cpp -c -o ../../build/caesar-opencl.o
-	g++ eten-cpu/test.cpp ../../build/base64-opencl.o ./../build/caesar-opencl.o -o -lOpenCL ../test-opencl 
+	g++ eten-cpu/test.cpp ../../build/base64-opencl.o ../../build/caesar-opencl.o -o -lOpenCL ../test-opencl 
