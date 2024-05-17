@@ -12,7 +12,7 @@
 #include "sha.h"
 #include "md.h"
 #include "RC4.h"
-#include "ceasar.h"
+#include "caesar.h"
 int stringToAscii(std::string input)
 {
     std::stringstream ss;
