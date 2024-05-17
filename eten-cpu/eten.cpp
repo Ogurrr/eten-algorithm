@@ -53,12 +53,7 @@ std::string etenCalc(std::string hash, std::string poolKey, int difficult) {
 
         hash = sha256(hash);
         poolKey = sha256(poolKey);
-    }
-
-    int hashASCII = stoi(toBinaryString(hash));
-    int poolKeyASCII = stoi(toBinaryString(poolKey));
-    hash = encryptRailFence(hash, poolKeyASCII);
-    poolKey = encryptRailFence(poolKey, hashASCII);
+    } 
 
     hash = bitwise_xor(hash, poolKey);
     hash = bitwise_or(hash, poolKey);
