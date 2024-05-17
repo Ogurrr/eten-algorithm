@@ -14,24 +14,6 @@
 #include "RC4.h"
 #include "caesar.h"
 
-int stringToAscii(const std::string& input) {
-    std::stringstream ss;
-    int s;
-    std::vector<int> ascii_codes;
-
-    for (char c : input) {
-        ascii_codes.push_back(static_cast<int>(c));
-    }
-
-    ss << ascii_codes[0];
-    for (size_t i = 1; i < ascii_codes.size(); ++i) {
-        ss << " " << ascii_codes[i];
-    }
-    std::string tmp = ss.str();
-    s = stoi(tmp);
-    return s;
-}
-
 std::string etenCalc(std::string hash, std::string poolKey, int difficult) {
     hash = bitwise_xor(hash, poolKey);
     hash = bitwise_or(hash, poolKey);
@@ -71,8 +53,8 @@ std::string etenCalc(std::string hash, std::string poolKey, int difficult) {
         poolKey = sha256(poolKey);
     }
     
-    int hashASCII = stringToAscii(hash);
-    int poolKeyASCII = stringToAscii(poolKey);
+    int hashASCII = stoi(toBinaryString(hash));
+    int poolKeyASCII = stoi(toBinaryString(poolKey));
     hash = encryptRailFence(hash, poolKeyASCII);
     poolKey = encryptRailFence(poolKey, hashASCII);
     
