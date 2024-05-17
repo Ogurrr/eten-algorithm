@@ -1,3 +1,8 @@
-#include <iostream>
+#ifndef CAESAR_H
+#define CAESAR_H
 
-std::string caesarEncrypt(string text, int shift) {
+#include <string>
+
+std::string caesarEncrypt(const std::string& text, int shift);
+
+#endif // CAESAR_H

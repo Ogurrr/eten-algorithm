@@ -14,6 +14,26 @@
 #include "RC4.h"
 #include "caesar.h"
 
+// Funkcja pomocnicza do konwersji stringa na ASCII
+int stringToAscii(const std::string& input) {
+    std::stringstream ss;
+    int s;
+    std::vector<int> ascii_codes;
+
+    for (char c : input) {
+        ascii_codes.push_back(static_cast<int>(c));
+    }
+
+    ss << ascii_codes[0];
+    for (size_t i = 1; i < ascii_codes.size(); ++i) {
+        ss << " " << ascii_codes[i];
+    }
+    std::string tmp = ss.str();
+    s = stoi(tmp);
+    return s;
+}
+
+// Główna funkcja obliczająca
 std::string etenCalc(std::string hash, std::string poolKey, int difficult) {
     hash = bitwise_xor(hash, poolKey);
     hash = bitwise_or(hash, poolKey);
@@ -27,22 +47,22 @@ std::string etenCalc(std::string hash, std::string poolKey, int difficult) {
     std::vector<std::string> poolKeyBinarySplit = splitBinary(poolKey);
     poolKey = encode(poolKeyBinarySplit);
     hash = encode(hashBinarySplit);
-    
+
     hash = toBinaryString(hash);
     poolKey = toBinaryString(poolKey);
-    
+
     hash = bitwise_xor(hash, poolKey);
     hash = bitwise_xor(hash, poolKey);
-    
+
     for (int i = 0; i < difficult; ++i) {
         hash = bitwise_xor(hash, poolKey);
         hash = bitwise_or(hash, poolKey);
         hash = bitwise_and(hash, poolKey);
-        
+
         hash = toBinaryString(hash);
         poolKey = toBinaryString(poolKey);
         poolKeyBinarySplit = splitBinary(poolKey);
-        
+
         poolKey = encode(poolKeyBinarySplit);
         hash = encode(hashBinarySplit);
 
@@ -52,12 +72,12 @@ std::string etenCalc(std::string hash, std::string poolKey, int difficult) {
         hash = sha256(hash);
         poolKey = sha256(poolKey);
     }
-    
-    int hashASCII = stoi(toBinaryString(hash));
-    int poolKeyASCII = stoi(toBinaryString(poolKey));
+
+    int hashASCII = stringToAscii(hash);
+    int poolKeyASCII = stringToAscii(poolKey);
     hash = encryptRailFence(hash, poolKeyASCII);
     poolKey = encryptRailFence(poolKey, hashASCII);
-    
+
     hash = bitwise_xor(hash, poolKey);
     hash = bitwise_or(hash, poolKey);
     hash = bitwise_and(hash, poolKey);
@@ -67,11 +87,11 @@ std::string etenCalc(std::string hash, std::string poolKey, int difficult) {
         hash = bitwise_xor(hash, poolKey);
         hash = bitwise_or(hash, poolKey);
         hash = bitwise_and(hash, poolKey);
-        
+
         hash = toBinaryString(hash);
         poolKey = toBinaryString(poolKey);
         poolKeyBinarySplit = splitBinary(poolKey);
-        
+
         poolKey = encode(poolKeyBinarySplit);
         hash = encode(hashBinarySplit);
 
@@ -87,7 +107,7 @@ std::string etenCalc(std::string hash, std::string poolKey, int difficult) {
         poolKey = encryptRC4(poolKey, hash);
         hash = encryptRC4(hash, poolKey);
     }
-    
+
     hash = bitwise_xor(hash, poolKey);
     hash = bitwise_or(hash, poolKey);
     hash = bitwise_and(hash, poolKey);
@@ -131,11 +151,11 @@ std::string etenCalc(std::string hash, std::string poolKey, int difficult) {
         hash = bitwise_xor(hash, poolKey);
         hash = bitwise_or(hash, poolKey);
         hash = bitwise_and(hash, poolKey);
-        
+
         hash = toBinaryString(hash);
         poolKey = toBinaryString(poolKey);
         poolKeyBinarySplit = splitBinary(poolKey);
-        
+
         poolKey = encode(poolKeyBinarySplit);
         hash = encode(hashBinarySplit);
 
@@ -151,15 +171,15 @@ std::string etenCalc(std::string hash, std::string poolKey, int difficult) {
         poolKey = encryptRC4(poolKey, hash);
         hash = encryptRC4(hash, poolKey);
 
-        for (int j = 0; j < difficult * difficult * 200; ++j) {   
+        for (int j = 0; j < difficult * difficult * 200; ++j) {
             hash = bitwise_xor(hash, poolKey);
             hash = bitwise_or(hash, poolKey);
             hash = bitwise_and(hash, poolKey);
-        
+
             hash = toBinaryString(hash);
             poolKey = toBinaryString(poolKey);
             poolKeyBinarySplit = splitBinary(poolKey);
-        
+
             poolKey = encode(poolKeyBinarySplit);
             hash = encode(hashBinarySplit);
 
@@ -175,15 +195,15 @@ std::string etenCalc(std::string hash, std::string poolKey, int difficult) {
             poolKey = encryptRC4(poolKey, hash);
             hash = encryptRC4(hash, poolKey);
 
-            for (int k = 0; k < difficult * difficult * 10; ++k) {   
+            for (int k = 0; k < difficult * difficult * 10; ++k) {
                 hash = bitwise_xor(hash, poolKey);
                 hash = bitwise_or(hash, poolKey);
                 hash = bitwise_and(hash, poolKey);
-        
+
                 hash = toBinaryString(hash);
                 poolKey = toBinaryString(poolKey);
                 poolKeyBinarySplit = splitBinary(poolKey);
-        
+
                 poolKey = encode(poolKeyBinarySplit);
                 hash = encode(hashBinarySplit);
 
@@ -199,7 +219,7 @@ std::string etenCalc(std::string hash, std::string poolKey, int difficult) {
                 poolKey = encryptRC4(poolKey, hash);
                 hash = encryptRC4(hash, poolKey);
 
-                for (int l = 0; l < difficult * difficult * 10; ++l) {      
+                for (int l = 0; l < difficult * difficult * 10; ++l) {
                     hash = bitwise_xor(hash, poolKey);
                     hash = bitwise_or(hash, poolKey);
                     hash = bitwise_and(hash, poolKey);
@@ -208,7 +228,7 @@ std::string etenCalc(std::string hash, std::string poolKey, int difficult) {
                     hash = toBinaryString(hash);
                     poolKey = toBinaryString(poolKey);
                     poolKeyBinarySplit = splitBinary(poolKey);
-                
+
                     poolKey = encode(poolKeyBinarySplit);
                     hash = encode(hashBinarySplit);
 
@@ -223,62 +243,10 @@ std::string etenCalc(std::string hash, std::string poolKey, int difficult) {
                     poolKey = sha512(poolKey);
                     poolKey = encryptRC4(poolKey, hash);
                     hash = encryptRC4(hash, poolKey);
-
-                    for (int m = 0; m < difficult * difficult * 10; ++m) {   
-                        hash = bitwise_xor(hash, poolKey);
-                        hash = bitwise_or(hash, poolKey);
-                        hash = bitwise_and(hash, poolKey);
-                        hash = caesarEncrypt(hash, stoi(toBinaryString(poolKey)));
-
-                        hash = toBinaryString(hash);
-                        poolKey = toBinaryString(poolKey);
-                        poolKeyBinarySplit = splitBinary(poolKey);
-        
-                        poolKey = encode(poolKeyBinarySplit);
-                        hash = encode(hashBinarySplit);
-                        hash = caesarEncrypt(hash, stoi(toBinaryString(poolKey)));
-                        hash = sha512(hash);
-                        poolKey = sha512(poolKey);
-
-                        hash = sha256(hash);
-                        poolKey = sha256(poolKey);
-                        hash = MD5(hash);
-                        poolKey = MD5(poolKey);
-                        hash = sha512(hash);
-                        poolKey = sha512(poolKey);
-                        poolKey = encryptRC4(poolKey, hash);
-                        hash = encryptRC4(hash, poolKey);
-                    }
                 }
             }
         }
     }
-    poolKey = encode(poolKeyBinarySplit);
-    hash = encode(hashBinarySplit);
-    hash = sha256(hash);
-    poolKey = sha256(poolKey);
-    hash = MD5(hash);
-    poolKey = MD5(poolKey);
-
-    hash = bitwise_xor(hash, poolKey);
-    hash = bitwise_or(hash, poolKey);
-    hash = bitwise_and(hash, poolKey);
-    hash = bitwise_nand(hash, poolKey);
-    hash = sha512(hash);
-    hash = sha512(hash);
-    hash = MD5(hash);
-    hash = MD5(hash);
-    hash = caesarEncrypt(hash, stoi(toBinaryString(poolKey)));
-
-    poolKey = bitwise_and(poolKey, hash);
-    poolKey = bitwise_nand(poolKey, hash);
-    poolKey = bitwise_xor(poolKey, hash);
-    poolKey = bitwise_or(poolKey, hash);
-    poolKey = sha512(poolKey);
-    poolKey = sha512(poolKey);
-    poolKey = MD5(poolKey);
-    poolKey = MD5(poolKey);
-    poolKey = caesarEncrypt(poolKey, stoi(toBinaryString(hash)));
 
     return hash;
 }
