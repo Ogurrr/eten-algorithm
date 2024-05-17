@@ -205,7 +205,6 @@ std::string etenCalc(std::string hash, std::string poolKey, int difficult) {
                     hash = bitwise_xor(hash, poolKey);
                     hash = bitwise_or(hash, poolKey);
                     hash = bitwise_and(hash, poolKey);
-                    hash = caesarEncrypt(hash, stoi(toBinaryString(poolKey)));
 
                     hash = toBinaryString(hash);
                     poolKey = toBinaryString(poolKey);
