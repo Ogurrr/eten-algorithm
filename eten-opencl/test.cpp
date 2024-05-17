@@ -4,6 +4,6 @@
 int main()
 {
     std::string test = "testowy tekst";
-    test = encode(test)
+    test = encode(test);
     std::cout << test;
 }
