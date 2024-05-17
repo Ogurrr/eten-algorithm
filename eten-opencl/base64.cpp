@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <CL/cl.h>
-
+#include <cstring>
 #define CHECK_ERROR(err) if (err != CL_SUCCESS) { printf("Error: %d\n", err); exit(EXIT_FAILURE); }
 
 const char* kernelSource = R"(
