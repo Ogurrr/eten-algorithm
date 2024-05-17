@@ -3,6 +3,7 @@
 #include <string.h>
 #include <CL/cl.h>
 #include <iostream>
+
 // Funkcja do sprawdzania błędów
 #define CHECK_ERROR(err) if (err != CL_SUCCESS) { printf("Error: %d\n", err); exit(EXIT_FAILURE); }
 
@@ -23,7 +24,7 @@ __kernel void caesar_cipher(__global const char* input, __global char* output, i
 }
 )";
 
-std::string caesarEncrypt(const std::string inputed, int shift);
+std::string caesarEncrypt(const std::string& inputed, int shift) {
     const char* input = inputed.c_str();
     size_t input_size = strlen(input);  
     
@@ -79,5 +80,7 @@ std::string caesarEncrypt(const std::string inputed, int shift);
     clReleaseCommandQueue(queue);
     clReleaseContext(context);
 
-    return output;
+    std::string result(output);
+    free(output);
+    return result;
 }
