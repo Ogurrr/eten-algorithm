@@ -1,10 +1,12 @@
 #include <CL/cl.h>
 #include <iostream>
 #include <vector>
+#include <cstdint>
+#include <algorithm>
 
 int main() {
     // Initialize OpenCL environment
-    cl_platform_t platform;
+    cl_platform_id platform;
     cl_device_id device;
     cl_context context;
     cl_command_queue queue;
@@ -13,9 +15,19 @@ int main() {
 
     // Get OpenCL platform and device
     cl_uint num_platforms;
-    clGetPlatformIDs(1, &platform, &num_platforms);
+    clGetPlatformIDs(1, NULL, &num_platforms);
+    if (num_platforms == 0) {
+        std::cerr << "No OpenCL platforms found." << std::endl;
+        return 1;
+    }
+    clGetPlatformIDs(1, &platform, NULL);
     cl_uint num_devices;
-    clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 1, &device, &num_devices);
+    clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 1, NULL, &num_devices);
+    if (num_devices == 0) {
+        std::cerr << "No OpenCL devices found." << std::endl;
+        return 1;
+    }
+    clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 1, &device, NULL);
 
     // Create OpenCL context and command queue
     context = clCreateContext(NULL, 1, &device, NULL, NULL, NULL);
@@ -65,43 +77,82 @@ __kernel void base64_encode(
 )";
 
     // Compile kernel source code
-    size_t kernel_source_size = kernel_source.size();
-    program = clCreateProgramWithSource(context, 1, (const char **)&kernel_source, &kernel_source_size, NULL);
-    clBuildProgram(program, 0, NULL, NULL, NULL, NULL);
+    cl_int status;
+    program = clCreateProgramWithSource(context, 1, (const char **)&kernel_source, NULL, &status);
+    if (status != CL_SUCCESS) {
+        std::cerr << "Error creating program: " << clGetErrorString(status) << std::endl;
+        return 1;
+    }
+    status = clBuildProgram(program, 0, NULL, NULL, NULL, NULL);
+    if (status != CL_SUCCESS) {
+        std::cerr << "Error building program: " << clGetErrorString(status) << std::endl;
+        return 1;
+    }
 
     // Create kernel function object
-    kernel = clCreateKernel(program, "base64_encode", NULL);
+    kernel = clCreateKernel(program, "base64_encode", &status);
+    if (status != CL_SUCCESS) {
+        std::cerr << "Error creating kernel: " << clGetErrorString(status) << std::endl;
+        return 1;
+    }
 
     // Create input and output buffers
-    std::vector<uchar> input = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24};
-    std::vector<uchar> output(input.size() * 4 / 3 + 3);
+    std::vector<unsigned char> input = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24};
+    std::vector<unsigned char> output(input.size() * 4 / 3 + 3);
 
     // Create buffer objects for input and output data
-    cl_mem input_buffer = clCreateBuffer(context, CL_MEM_READ_ONLY, input.size() * sizeof(uchar), NULL, NULL);
-    cl_mem output_buffer = clCreateBuffer(context, CL_MEM_WRITE_ONLY, output.size() * sizeof(uchar), NULL, NULL);
+    cl_mem input_buffer = clCreateBuffer(context, CL_MEM_READ_ONLY, input.size() * sizeof(unsigned char), NULL, NULL);
+    cl_mem output_buffer = clCreateBuffer(context, CL_MEM_WRITE_ONLY, output.size() * sizeof(unsigned char), NULL, NULL);
 
     // Write input data to input buffer
-    clEnqueueWriteBuffer(queue, input_buffer, CL_TRUE, 0, input.size() * sizeof(uchar), input.data(), 0, NULL, NULL);
+    status = clEnqueueWriteBuffer(queue, input_buffer, CL_TRUE, 0, input.size() * sizeof(unsigned char), input.data(), 0, NULL, NULL);
+    if (status != CL_SUCCESS) {
+        std::cerr << "Error writing input buffer: " << clGetErrorString(status) << std::endl;
+        return 1;
+    }
 
     // Set kernel arguments
-    clSetKernelArg(kernel, 0, sizeof(cl_mem), &input_buffer);
-    clSetKernelArg(kernel, 1, sizeof(cl_mem), &output_buffer);
-    clSetKernelArg(kernel, 2, sizeof(uint), &input.size());
-    clSetKernelArg(kernel, 3, sizeof(uint), &output.size());
+    status = clSetKernelArg(kernel, 0, sizeof(cl_mem), &input_buffer);
+    if (status != CL_SUCCESS) {
+        std::cerr << "Error setting kernel argument 0: " << clGetErrorString(status) << std::endl;
+        return 1;
+    }
+    status = clSetKernelArg(kernel, 1, sizeof(cl_mem), &output_buffer);
+    if (status != CL_SUCCESS) {
+        std::cerr << "Error setting kernel argument 1: " << clGetErrorString(status) << std::endl;
+        return 1;
+    }
+    status = clSetKernelArg(kernel, 2, sizeof(uint32_t), &input.size());
+    if (status != CL_SUCCESS) {
+        std::cerr << "Error setting kernel argument 2: " << clGetErrorString(status) << std::endl;
+        return 1;
+    }
+    status = clSetKernelArg(kernel, 3, sizeof(uint32_t), &output.size() * sizeof(unsigned char));
+    if (status != CL_SUCCESS) {
+        std::cerr << "Error setting kernel argument 3: " << clGetErrorString(status) << std::endl;
+        return 1;
+    }
 
     // Execute kernel function
     size_t global_work_size = input.size() / 3;
     size_t local_work_size = 256;
-    clEnqueueNDRangeKernel(queue, kernel, 1, NULL, &global_work_size, &local_work_size, 0, NULL, NULL);
+    status = clEnqueueNDRangeKernel(queue, kernel, 1, NULL, &global_work_size, &local_work_size, 0, NULL, NULL);
+    if (status != CL_SUCCESS) {
+        std::cerr << "Error executing kernel: " << clGetErrorString(status) << std::endl;
+        return 1;
+    }
 
     // Read output data from output buffer
-    clEnqueueReadBuffer(queue, output_buffer, CL_TRUE, 0, output.size() * sizeof(uchar), output.data(), 0, NULL, NULL);
+    status = clEnqueueReadBuffer(queue, output_buffer, CL_TRUE, 0, output.size() * sizeof(unsigned char), output.data(), 0, NULL, NULL);
+    if (status != CL_SUCCESS) {
+        std::cerr << "Error reading output buffer: " << clGetErrorString(status) << std::endl;
+        return 1;
+    }
 
     // Print output data
-    std::cout << "Output data:" << std::endl;
-    for (uchar c : output) {
+    std::for_each(output.begin(), output.end(), [](unsigned char c) {
         std::cout << c;
-    }
+    });
     std::cout << std::endl;
 
     // Release OpenCL resources
