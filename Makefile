@@ -14,3 +14,4 @@
 	g++ eten-opencl/base64.cpp -c -o ../../build/base64-opencl.o
 	g++ eten-opencl/caesar.cpp -c -o ../../build/caesar-opencl.o
 	g++ eten-opencl/test.cpp ../../build/base64-opencl.o ../../build/caesar-opencl.o -lOpenCL -o ../test-opencl 
+
