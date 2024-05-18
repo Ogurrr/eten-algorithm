@@ -4,24 +4,22 @@
 
 int main() {
     // Initialize OpenCL environment
-    cl::Platform platform;
-    cl::Device device;
-    cl::Context context;
-    cl::CommandQueue queue;
-    cl::Program program;
-    cl::Kernel kernel;
+    cl_platform_t platform;
+    cl_device_id device;
+    cl_context context;
+    cl_command_queue queue;
+    cl_program program;
+    cl_kernel kernel;
 
     // Get OpenCL platform and device
-    std::vector<cl::Platform> platforms;
-    cl::Platform::get(&platforms);
-    platform = platforms[0];
-    std::vector<cl::Device> devices;
-    platform.getDevices(CL_DEVICE_TYPE_GPU, &devices);
-    device = devices[0];
+    cl_uint num_platforms;
+    clGetPlatformIDs(1, &platform, &num_platforms);
+    cl_uint num_devices;
+    clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 1, &device, &num_devices);
 
     // Create OpenCL context and command queue
-    context = cl::Context(device);
-    queue = cl::CommandQueue(context, device);
+    context = clCreateContext(NULL, 1, &device, NULL, NULL, NULL);
+    queue = clCreateCommandQueue(context, device, 0, NULL);
 
     // Read kernel source code from file
     std::string kernel_source = R"(
@@ -65,37 +63,39 @@ __kernel void base64_encode(
     }
 }
 )";
+
     // Compile kernel source code
-    cl::Program::Sources sources;
-    sources.push_back(std::make_pair(kernel_source.c_str(), kernel_source.length()));
-    program = cl::Program(context, sources);
-    program.build("-cl-std=CL1.2");
+    size_t kernel_source_size = kernel_source.size();
+    program = clCreateProgramWithSource(context, 1, (const char **)&kernel_source, &kernel_source_size, NULL);
+    clBuildProgram(program, 0, NULL, NULL, NULL, NULL);
 
     // Create kernel function object
-    kernel = cl::Kernel(program, "base64_encode");
+    kernel = clCreateKernel(program, "base64_encode", NULL);
 
     // Create input and output buffers
     std::vector<uchar> input = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24};
     std::vector<uchar> output(input.size() * 4 / 3 + 3);
 
     // Create buffer objects for input and output data
-    cl::Buffer input_buffer(context, CL_MEM_READ_ONLY, input.size() * sizeof(uchar));
-    cl::Buffer output_buffer(context, CL_MEM_WRITE_ONLY, output.size() * sizeof(uchar));
+    cl_mem input_buffer = clCreateBuffer(context, CL_MEM_READ_ONLY, input.size() * sizeof(uchar), NULL, NULL);
+    cl_mem output_buffer = clCreateBuffer(context, CL_MEM_WRITE_ONLY, output.size() * sizeof(uchar), NULL, NULL);
 
     // Write input data to input buffer
-    queue.enqueueWriteBuffer(input_buffer, CL_TRUE, 0, input.size() * sizeof(uchar), input.data());
+    clEnqueueWriteBuffer(queue, input_buffer, CL_TRUE, 0, input.size() * sizeof(uchar), input.data(), 0, NULL, NULL);
 
     // Set kernel arguments
-    kernel.setArg(0, input_buffer);
-    kernel.setArg(1, output_buffer);
-    kernel.setArg(2, static_cast<uint>(input.size()));
-    kernel.setArg(3, static_cast<uint>(output.size()));
+    clSetKernelArg(kernel, 0, sizeof(cl_mem), &input_buffer);
+    clSetKernelArg(kernel, 1, sizeof(cl_mem), &output_buffer);
+    clSetKernelArg(kernel, 2, sizeof(uint), &input.size());
+    clSetKernelArg(kernel, 3, sizeof(uint), &output.size());
 
     // Execute kernel function
-    queue.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(input.size() / 3), cl::NullRange);
+    size_t global_work_size = input.size() / 3;
+    size_t local_work_size = 256;
+    clEnqueueNDRangeKernel(queue, kernel, 1, NULL, &global_work_size, &local_work_size, 0, NULL, NULL);
 
     // Read output data from output buffer
-    queue.enqueueReadBuffer(output_buffer, CL_TRUE, 0, output.size() * sizeof(uchar), output.data());
+    clEnqueueReadBuffer(queue, output_buffer, CL_TRUE, 0, output.size() * sizeof(uchar), output.data(), 0, NULL, NULL);
 
     // Print output data
     std::cout << "Output data:" << std::endl;
@@ -103,6 +103,14 @@ __kernel void base64_encode(
         std::cout << c;
     }
     std::cout << std::endl;
+
+    // Release OpenCL resources
+    clReleaseKernel(kernel);
+    clReleaseProgram(program);
+    clReleaseMemObject(input_buffer);
+    clReleaseMemObject(output_buffer);
+    clReleaseCommandQueue(queue);
+    clReleaseContext(context);
 
     return 0;
 }
