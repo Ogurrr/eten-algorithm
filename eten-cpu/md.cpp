@@ -6,6 +6,8 @@
 #include <string>
 #include <iomanip>
 
+#define MD2_DIGEST_LENGTH 16
+
 // Function to compute MD5 hash of a string
 std::string MD5(const std::string& input) {
     unsigned char digest[MD5_DIGEST_LENGTH];
