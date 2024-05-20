@@ -78,9 +78,6 @@ std::string etenCalc(std::string hash, std::string poolKey, int difficult) {
         hash = sha256(hash);
         poolKey = sha256(poolKey);
         hash = MD5(hash);
-        hash = MD2(hash);
-        hash = MD4(hash);
-        hash = RIPEMD160(hash);
         poolKey = MD5(poolKey);
         hash = sha512(hash);
         poolKey = sha512(poolKey);
@@ -101,9 +98,6 @@ std::string etenCalc(std::string hash, std::string poolKey, int difficult) {
     hash = sha256(hash);
     poolKey = sha256(poolKey);
     hash = MD5(hash);
-    hash = MD2(hash);
-    hash = MD4(hash);
-    hash = RIPEMD160(hash);
     poolKey = MD5(poolKey);
 
     hash = bitwise_xor(hash, poolKey);
@@ -118,9 +112,6 @@ std::string etenCalc(std::string hash, std::string poolKey, int difficult) {
     hash = sha256(hash);
     poolKey = sha256(poolKey);
     hash = MD5(hash);
-    hash = MD2(hash);
-    hash = MD4(hash);
-    hash = RIPEMD160(hash);
     poolKey = MD5(poolKey);
 
     hash = bitwise_xor(hash, poolKey);
@@ -151,9 +142,6 @@ std::string etenCalc(std::string hash, std::string poolKey, int difficult) {
         hash = sha256(hash);
         poolKey = sha256(poolKey);
         hash = MD5(hash);
-        hash = MD2(hash);
-        hash = MD4(hash);
-        hash = RIPEMD160(hash);
         poolKey = MD5(poolKey);
         hash = sha512(hash);
         poolKey = sha512(poolKey);
@@ -178,9 +166,6 @@ std::string etenCalc(std::string hash, std::string poolKey, int difficult) {
             hash = sha256(hash);
             poolKey = sha256(poolKey);
             hash = MD5(hash);
-            hash = MD2(hash);
-            hash = MD4(hash);
-            hash = RIPEMD160(hash);
             poolKey = MD5(poolKey);
             hash = sha512(hash);
             poolKey = sha512(poolKey);
