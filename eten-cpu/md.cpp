@@ -8,7 +8,7 @@
 #include <sstream>
 
 // Function to compute MD5 hash of a string
-std::string computeMD5(const std::string& input) {
+std::string MD5(const std::string& input) {
     unsigned char digest[MD5_DIGEST_LENGTH];
     MD5(reinterpret_cast<const unsigned char*>(input.c_str()), input.length(), digest);
 
