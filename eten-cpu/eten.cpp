@@ -4,6 +4,7 @@
 #include <bitset>
 #include <vector>
 #include <cmath>
+#include <threads>
 
 #include "logic.h"
 #include "base64.h"
@@ -16,7 +17,7 @@
 
 
 // Główna funkcja obliczająca
-std::string etenCalc(std::string hash, std::string poolKey, int difficult) {
+std::string etenCompute(std::string hash, std::string poolKey, int difficult) {
     hash = bitwise_xor(hash, poolKey);
     hash = bitwise_or(hash, poolKey);
     hash = bitwise_and(hash, poolKey);
@@ -175,4 +176,25 @@ std::string etenCalc(std::string hash, std::string poolKey, int difficult) {
     }
 
     return hash;
+}
+std::string etenCalc(std::string hash, std::string poolKey, int difficult) {
+    std::vector<std::string> hashChunks;
+    std::vector<std::string> poolKeyChunks;
+    std::string out = "";
+    size_t hashLength = hash.length();
+    size_t poolKeyhLength = poolKey.length();
+    for (size_t i = 0; i < length; i += hashChunks) {
+        hashChunks.push_back(hash.substr(i, hashLength));
+    }
+    for (size_t i = 0; i < length; i += poolKey) {
+        poolKeyChunks.push_back(poolKey.substr(i, poolKey));
+    }
+    if(hashLength != poolKeyhLength)
+    {
+        return "-1";
+    }
+    for (size_t i = 0; i < length; i += hashChunks) {
+        out += etenCompute(hashChunks[i],poolKeyChunks[i],difficult)
+    }
+    return chunks;
 }
