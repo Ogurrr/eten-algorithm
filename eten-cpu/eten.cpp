@@ -4,7 +4,7 @@
 #include <bitset>
 #include <vector>
 #include <cmath>
-#include <threads>
+#include <thread>
 
 #include "logic.h"
 #include "base64.h"
@@ -177,24 +177,24 @@ std::string etenCompute(std::string hash, std::string poolKey, int difficult) {
 
     return hash;
 }
-std::string etenCalc(std::string hash, std::string poolKey, int difficult) {
+std::string etenCalc(const std::string &hash, const std::string &poolKey, int difficult) {
+    if(hash.length() != poolKey.length()) {
+        return "-1";
+    }
+
     std::vector<std::string> hashChunks;
     std::vector<std::string> poolKeyChunks;
     std::string out = "";
     size_t hashLength = hash.length();
-    size_t poolKeyhLength = poolKey.length();
-    for (size_t i = 0; i < length; i += hashChunks) {
-        hashChunks.push_back(hash.substr(i, hashLength));
+
+    for (size_t i = 0; i < hashLength; ++i) {
+        hashChunks.push_back(hash.substr(i, 1));
+        poolKeyChunks.push_back(poolKey.substr(i, 1));
     }
-    for (size_t i = 0; i < length; i += poolKey) {
-        poolKeyChunks.push_back(poolKey.substr(i, poolKey));
+
+    for (size_t i = 0; i < hashLength; ++i) {
+        out += etenCompute(hashChunks[i], poolKeyChunks[i], difficult);
     }
-    if(hashLength != poolKeyhLength)
-    {
-        return "-1";
-    }
-    for (size_t i = 0; i < length; i += hashChunks) {
-        out += etenCompute(hashChunks[i],poolKeyChunks[i],difficult)
-    }
-    return chunks;
+
+    return out;
 }
