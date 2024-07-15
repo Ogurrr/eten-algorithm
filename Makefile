@@ -8,4 +8,3 @@
 	g++ eten-cpu/md.cpp -c -o ../../build/md-cpu.o 
 	g++ eten-cpu/RC4.cpp -c -o ../../build/RC4-cpu.o
 	g++ eten-cpu/caesar.cpp -c -o ../../build/caesar-cpu.o
-	
