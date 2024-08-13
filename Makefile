@@ -19,3 +19,4 @@
 	g++ eten-cpu/RC4.cpp -c -fPIC -o RC4-cpu.o
 	g++ eten-cpu/caesar.cpp -fPIC -c -o caesar-cpu.o
 	g++ -shared -o libetenalgorithm.so eten-cpu.o logic-cpu.o base64-cpu.o railfence-cpu.o utils-cpu.o sha-cpu.o md-cpu.o RC4-cpu.o caesar-cpu.o
+	rm *.o
